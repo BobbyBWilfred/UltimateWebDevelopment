@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    header {
+      background-color: #4caf50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .content {
+      padding: 20px;
+    }
+    .greeting {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    .purchase-history {
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    .product-catalog {
+      margin-top: 30px;
+    }
+    .product {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .product img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+    .product button {
+      margin-left: auto;
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .product button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to the Customer Dashboard</h1>
+  </header>
+  <div class="content">
+    <div class="greeting" id="greeting">Hi, Customer!</div>
+
+    <div class="purchase-history">
+      <h2>Your Purchase History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Date</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody id="purchaseHistory">
+          <!-- Populated by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="product-catalog">
+      <h2>Explore Products</h2>
+      <div id="productCatalog">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+  <script>
+    // Simulated user data
+    const customerName = 'Customer';
+    const purchaseHistory = [
+      { product: 'Laptop', date: '2024-12-01', price: '$1200' },
+      { product: 'Smartphone', date: '2024-11-15', price: '$800' },
+      { product: 'Headphones', date: '2024-10-30', price: '$150' },
+    ];
+    const products = [
+      { name: 'Tablet', price: '$400', img: 'https://via.placeholder.com/100' },
+      { name: 'Smartwatch', price: '$200', img: 'https://via.placeholder.com/100' },
+      { name: 'Camera', price: '$600', img: 'https://via.placeholder.com/100' },
+    ];
+
+    // Populate greeting
+    document.getElementById('greeting').textContent = `Hi, ${customerName}!`;
+
+    // Populate purchase history
+    const purchaseHistoryTable = document.getElementById('purchaseHistory');
+    purchaseHistory.forEach((entry) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${entry.product}</td>
+        <td>${entry.date}</td>
+        <td>${entry.price}</td>
+      `;
+      purchaseHistoryTable.appendChild(row);
+    });
+
+    // Populate product catalog
+    const productCatalog = document.getElementById('productCatalog');
+    products.forEach((product) => {
+      const productDiv = document.createElement('div');
+      productDiv.className = 'product';
+      productDiv.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <div>
+          <h3>${product.name}</h3>
+          <p>Price: ${product.price}</p>
+        </div>
+        <button>Add to Cart</button>
+      `;
+      productCatalog.appendChild(productDiv);
+    });
+  </script>
+</body>
+</html>
