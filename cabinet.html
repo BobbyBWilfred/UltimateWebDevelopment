@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cabinet Dashboard</title>
+  <style>
+    /* Basic styling for the dashboard */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    #chatBox {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fefefe;
+    }
+
+    #messages {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    #messages div {
+      margin-bottom: 8px;
+      padding: 5px 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+    }
+
+    #messages .time {
+      font-size: 12px;
+      color: #777;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .clear-chat {
+      background-color: #e74c3c;
+      margin-top: 10px;
+    }
+
+    .clear-chat:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to the Cabinet Dashboard</h1>
+    <h2>Hi, <span id="cabinetMemberName">Loading...</span>!</h2>
+
+    <!-- Table for Cabinet Members -->
+    <section>
+      <h3>Cabinet Members</h3>
+      <table id="cabinetTable">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Cabinet members will be dynamically populated here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Real-Time Group Chat -->
+    <section>
+      <h3>Group Chat</h3>
+      <div id="chatBox">
+        <div id="messages">
+          <!-- Messages will appear here -->
+        </div>
+        <form id="chatForm">
+          <input type="text" id="messageInput" placeholder="Type a message..." required>
+          <button type="submit">Send</button>
+        </form>
+        <button id="clearChatButton" class="clear-chat" style="display: none;">Clear Chat</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Include Socket.IO -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    let user = null;
+    const socket = io();
+
+    // Populate Cabinet Members Table
+    async function loadCabinetMembers() {
+      const response = await fetch('/api/cabinets'); // API to fetch cabinet members
+      const members = await response.json();
+
+      const tbody = document.getElementById('cabinetTable').querySelector('tbody');
+      tbody.innerHTML = '';
+
+      members.forEach(member => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${member.username}</td>
+          <td>${member.role}</td>
+          <td>${member.email}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Set User's Name and Role
+    async function setCabinetMemberDetails() {
+      const response = await fetch('/api/user'); // API to fetch logged-in user data
+      user = await response.json();
+      document.getElementById('cabinetMemberName').textContent = user.name || 'Cabinet Member';
+
+      // Show "Clear Chat" button if user role is President
+      if (user.role === 'President') {
+        document.getElementById('clearChatButton').style.display = 'block';
+      }
+    }
+
+    // Real-Time Chat Logic
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const messagesDiv = document.getElementById('messages');
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const message = messageInput.value.trim();
+      if (message && user) {
+        socket.emit('cabinet-message', { message, user: user.name }); // Emit message to server with user and message content
+        messageInput.value = '';
+      }
+    });
+
+    // Receive and Display Messages
+    socket.on('cabinet-message', (data) => {
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <strong>${data.user}:</strong> ${data.message}
+        <div class="time">${new Date(data.timestamp).toLocaleTimeString()}</div>
+      `;
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the bottom
+    });
+
+    // Load Chat History
+    async function loadChatHistory() {
+      const response = await fetch('/api/chat');
+      const chatHistory = await response.json();
+
+      chatHistory.forEach(data => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <strong>${data.user}:</strong> ${data.message}
+          <div class="time">${new Date(data.timestamp).toLocaleTimeString()}</div>
+        `;
+        messagesDiv.appendChild(div);
+      });
+    }
+
+    // Clear Chat (Only President)
+    document.getElementById('clearChatButton').addEventListener('click', async () => {
+      if (confirm('Are you sure you want to clear the chat?')) {
+        await fetch('/api/chat', { method: 'DELETE' });
+        messagesDiv.innerHTML = ''; // Clear messages on frontend
+        socket.emit('clear-chat', user.name); // Emit clear-chat event to server
+      }
+    });
+
+    // Initial Page Load
+    loadCabinetMembers();
+    setCabinetMemberDetails();
+    loadChatHistory();
+  </script>
+</body>
+</html>

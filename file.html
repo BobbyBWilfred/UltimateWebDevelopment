@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BBW - Login/Signup</title>
+  <link rel="stylesheet" href="file.css">
+</head>
+<body>
+  <div class="main-container">
+    <h1>BBW Login System</h1>
+
+    <!-- Boxes for selection -->
+    <div class="box-container">
+      <div class="box" id="cabinetBox">
+        <h2>Cabinet</h2>
+      </div>
+      <div class="box" id="employerBox">
+        <h2>Employer</h2>
+      </div>
+      <div class="box" id="customerBox">
+        <h2>Customer</h2>
+      </div>
+    </div>
+
+    <!-- Dynamic Forms -->
+    <div class="form-container" id="formContainer" style="display: none;">
+      <h2 id="formTitle"></h2>
+
+      <!-- Cabinet Login Form -->
+      <div id="cabinetForm" class="form-section" style="display: none;">
+        <form id="cabinetLoginForm">
+          <input type="text" id="cabinetUsername" placeholder="Enter Cabinet Username" required />
+          <input type="password" id="cabinetPassword" placeholder="Enter Password" required />
+          <button type="submit">Login as Cabinet</button>
+        </form>
+      </div>
+
+      <!-- Employer Login Form -->
+      <div id="employerForm" class="form-section" style="display: none;">
+        <form id="employerLoginForm">
+          <input type="text" id="employerUsername" placeholder="Enter Employer Username" required />
+          <input type="password" id="employerPassword" placeholder="Enter Password" required />
+          <button type="submit">Login as Employer</button>
+        </form>
+      </div>
+
+      <!-- Customer Signup/Login Form -->
+      <div id="customerForm" class="form-section" style="display: none;">
+        <form id="customerSignupForm">
+          <input type="text" id="customerUsername" placeholder="Enter Username" required />
+          <input type="password" id="customerPassword" placeholder="Enter Password" required />
+          <button type="submit">Sign Up</button>
+        </form>
+
+        <form id="customerLoginForm" style="display: none;">
+          <input type="text" id="customerLoginUsername" placeholder="Enter Username" required />
+          <input type="password" id="customerLoginPassword" placeholder="Enter Password" required />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="file.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employer Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+    header {
+      background-color: #2980b9;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      padding: 20px;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    .job-list, .applicants, .announcements {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    ul li {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Employer Dashboard</h1>
+  </header>
+  <div class="container">
+    <div class="job-list">
+      <h2>Job Openings</h2>
+      <ul id="jobList"></ul>
+      <button onclick="addJob()">Add Job</button>
+    </div>
+
+    <div class="applicants">
+      <h2>Applicants</h2>
+      <ul id="applicantList">
+        <li>John Doe - Applied for "Software Engineer"</li>
+        <li>Jane Smith - Applied for "Project Manager"</li>
+      </ul>
+    </div>
+
+    <div class="announcements">
+      <h2>Company Announcements</h2>
+      <p>No new announcements.</p>
+    </div>
+  </div>
+  <script>
+    const jobs = ['Software Engineer', 'Project Manager', 'HR Assistant'];
+
+    // Populate job list
+    function populateJobs() {
+      const jobList = document.getElementById('jobList');
+      jobList.innerHTML = '';
+      jobs.forEach((job) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = job;
+        jobList.appendChild(listItem);
+      });
+    }
+
+    // Add a new job
+    function addJob() {
+      const newJob = prompt('Enter the job title:');
+      if (newJob) {
+        jobs.push(newJob);
+        populateJobs();
+      }
+    }
+
+    // Initialize
+    populateJobs();
+  </script>
+</body>
+</html>
